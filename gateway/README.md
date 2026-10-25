@@ -17,7 +17,7 @@ mhs-gateway/
 ├── virtual_executor.py   # 虚拟执行器（TCP 127.0.0.1:9999，MSP1 行协议）
 ├── rules.py              # 本地规则引擎（draft/testing/active/disabled，断云闭环）
 ├── mcp_server.py         # MCP server：tools/resources 由描述符生成，模型无关
-├── selftest.py           # 本地自测（27 项，不含真实硬件）
+├── selftest.py           # 本地自测（32 项，不含真实硬件）
 ├── rules.yaml            # 本地规则（含 AC-2 等价触发规则）
 └── descriptors/          # 设备能力描述符（DCD，唯一事实源）
     ├── esp32s3-led-01.yaml
@@ -28,7 +28,7 @@ mhs-gateway/
 
 ```bash
 python3 -m venv .venv-mhs && .venv-mhs/bin/pip install -r mhs-gateway/requirements.txt
-.venv-mhs/bin/python mhs-gateway/selftest.py          # 26 项全绿
+.venv-mhs/bin/python mhs-gateway/selftest.py          # 32 项全绿
 .venv-mhs/bin/python mhs-gateway/mcp_smoke.py         # MCP stdio 冒烟（自动起虚拟执行器）
 ```
 

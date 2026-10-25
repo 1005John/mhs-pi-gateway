@@ -36,6 +36,13 @@
 | `docs/` | 能力规范 v0.9b、测试用例（33 条）、两份测试报告、硬件摸底 |
 | `test-assets/` | 回归脚本 + BUG-001 复抓证据（审计/引擎日志/py-spy 栈三路对账） |
 
+## 文档导航
+
+- **[docs/](docs/README.md)** — 索引页。核心三篇：[能力规范 v0.9b](docs/MHS-网关能力规范-v0.9.md)（描述符/护栏/规则/审计/协议的唯一事实源）、[设备接入指南](docs/设备接入指南.md)（三步接新硬件，不改网关代码）、[测试报告](docs/MHS-网关-测试报告-20261024.md)
+- **[gateway/README.md](gateway/README.md)** — 网关部署运维（单进程形态、CLI 全命令、急停与规则运维）
+- **[firmware/esp32s3-led-cycle/README.md](firmware/esp32s3-led-cycle/README.md)** — 固件构建烧录 + MSP-1 命令速查
+- **[test-assets/README.md](test-assets/README.md)** — 回归脚本用法 + BUG-001 证据档案导读
+
 ## 快速开始（网关）
 
 ```bash
