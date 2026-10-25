@@ -1,0 +1,55 @@
+# MHS 网关 — 设备能力描述符（DCD）
+# 来源：《MHS-网关能力规范-v0.9》§1 示例描述符（唯一事实源，勿在代码里重复定义）
+spec_version: "0.9"
+device:
+  id: esp32s3-led-01
+  name: ESP32-S3 RGB LED 板
+  category: usb-serial        # usb-serial | network | virtual
+  adapter: serial-msp1        # 网关侧适配器注册名
+  transport:
+    serial: { port: /dev/ttyACM0, baud: 115200 }
+  identity:                   # USB 热插拔重枚举时用于自动匹配
+    usb: { vid: "303a", pid: "1001" }
+
+resources:                    # 可读状态 = MCP resources
+  - { name: chip_temp_c, type: float, unit: "°C", access: ro, poll_s: 10,
+      desc: "S3 片内温度传感器" }
+  - { name: led_mode,   type: enum, values: [static, blink, cycle, "off"], access: rw }
+  - { name: led_color,  type: string, pattern: "^#[0-9a-fA-F]{6}$", access: rw }
+  - { name: fw_version, type: string, access: ro }
+
+actions:                      # 可执行动作 = MCP tools
+  - name: ping
+    risk: L0
+    params: {}
+    timeout_ms: 500
+    desc: 探活，返回 uptime 与固件版本
+  - name: read_temp
+    risk: L0
+    params: {}
+    timeout_ms: 500
+    rate_limit: { max_per_min: 30 }
+  - name: set_led
+    risk: L1
+    params:
+      mode:      { type: enum, values: [static, blink, cycle, "off"], required: true }
+      color:     { type: string, pattern: "^#[0-9a-fA-F]{6}$",
+                   required_if: { mode: [static, blink] } }
+      period_ms: { type: int, min: 100, max: 10000, default: 2000 }
+    preconditions: [ping]     # 前置：先探活成功
+    timeout_ms: 800
+    rate_limit: { max_per_min: 10, cooldown_ms: 500 }
+  - name: reset
+    risk: L2
+    params: {}
+    timeout_ms: 5000
+    confirm: manual           # 一期：云端触发需云端会话内人工确认
+    rate_limit: { max_per_min: 2, cooldown_ms: 10000 }
+
+health:
+  probe: { method: ping, interval_s: 5, miss_threshold: 3 }   # 连 miss 次 → offline
+
+meta:
+  descriptor_version: 1
+  notes: "首台实机：ESP32-S3 LED 板（LED v1.0 项目遗留硬件 R1：GPIO0 间歇拉低，复位类失败先查硬件）
+"

@@ -1,0 +1,34 @@
+# MHS 网关 — 设备能力描述符（DCD）
+# 来源：《MHS-网关能力规范-v0.9》§7 实例 2
+# 虚拟网口执行器：替需求 1 的 B 侧，真实设备到位后换适配器零返工
+spec_version: "0.9"
+device:
+  id: virtual-actuator-01
+  name: 虚拟网口执行器
+  category: virtual
+  adapter: net-tcp-json
+  transport:
+    network: { host: 127.0.0.1, port: 9999, proto: tcp }
+
+resources:
+  - { name: output, type: enum, values: ["on", "off"], access: rw }
+
+actions:
+  - name: ping
+    risk: L0
+    params: {}
+    timeout_ms: 500
+    desc: 探活，返回 uptime 与固件版本（health.probe 依赖）
+  - name: set_output
+    risk: L1
+    params:
+      state: { type: enum, values: ["on", "off"], required: true }
+    timeout_ms: 500
+    rate_limit: { max_per_min: 20 }
+
+health:
+  probe: { method: ping, interval_s: 5, miss_threshold: 3 }
+
+meta:
+  descriptor_version: 1
+  notes: "TCP 行协议 CMD/ACK 同 MSP-1 风格，真实设备到位后换适配器"

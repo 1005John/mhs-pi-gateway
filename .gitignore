@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 运行时状态（部署机本地生成，不入库）
+logs/
+audit.jsonl*
+*.log
+.killswitch
+rules.status.json
+nohup.out
+
+# 构建中间产物（binaries/ 下的是刻意保留的发布产物，不排）
+.build/
+build/
+build_opt/
+
+# 系统杂项
+.DS_Store

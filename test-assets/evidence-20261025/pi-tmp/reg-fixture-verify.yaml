@@ -1,0 +1,20 @@
+# 回归 T2-6：verify 必败——动作把输出关掉却校验 on，必然超时 → retry 重执行一次。
+# 预期同一规则出现两次 allowed 执行，间隔 ≈ verify timeout(2s)。
+rules:
+  - id: reg-verifyfail-01
+    name: 回归-T2-6 verify 必败（动作关输出却校验 on → 超时重试重执行）
+    status: active
+    trigger:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "on"
+      for_s: 0
+      retrigger_cooldown_s: 30
+    actions:
+      - { device: virtual-actuator-01, action: set_output, params: { state: "off" } }
+    verify:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "on"
+      timeout_ms: 2000
+      on_fail: { notify: cloud, retry: 1 }

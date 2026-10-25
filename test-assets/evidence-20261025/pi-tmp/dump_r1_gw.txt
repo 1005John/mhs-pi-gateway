@@ -1,0 +1,37 @@
+Process 27011: /home/<PI-USER>/mhs-gateway/.venv/bin/python gateway.py mcp --transport http --port 8808 --rules rules.yaml
+Python v3.13.5 (/usr/bin/python3.13)
+
+Thread 27011 (idle): "MainThread"
+    select (selectors.py:452)
+    _run_once (asyncio/base_events.py:2004)
+    run_forever (asyncio/base_events.py:683)
+    run_until_complete (asyncio/base_events.py:712)
+    run (asyncio/runners.py:118)
+    run (anyio/_backends/_asyncio.py:2548)
+    run (anyio/_core/_eventloop.py:83)
+    run (mcp/server/mcpserver/server.py:425)
+    serve (mcp_server.py:190)
+    main (gateway.py:259)
+    <module> (gateway.py:297)
+Thread 27013 (idle): "Thread-1 (_health_loop)"
+    wait (threading.py:363)
+    wait (threading.py:659)
+    _health_loop (gateway.py:172)
+    run (threading.py:994)
+    _bootstrap_inner (threading.py:1043)
+    _bootstrap (threading.py:1014)
+Thread 27014 (idle): "Thread-2 (_kill_file_loop)"
+    wait (threading.py:363)
+    wait (threading.py:659)
+    _kill_file_loop (gateway.py:135)
+    run (threading.py:994)
+    _bootstrap_inner (threading.py:1043)
+    _bootstrap (threading.py:1014)
+Thread 27015 (idle): "rule-engine"
+    wait (threading.py:363)
+    wait (threading.py:659)
+    watch (rules.py:292)
+    run (threading.py:994)
+    _bootstrap_inner (threading.py:1043)
+    _bootstrap (threading.py:1014)
+

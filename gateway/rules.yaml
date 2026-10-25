@@ -1,0 +1,42 @@
+# MHS 网关 — 联动规则（规范 §3 schema；状态只允许云端改）
+# rule-20261024-01 = AC-2 本地闭环演练规则（等价触发口径，Chief 2026-10-24 批）：
+#   云端经 MCP 预置 virtual-actuator-01/output=on（调试预置，不计入闭环）
+#   → 本地引擎检测 → set_led 红闪 → 校验 led_mode（全程本地，断 WAN 可跑）
+rules:
+  - id: rule-20261024-01
+    name: 执行器输出 → LED 红闪警示
+    status: active            # draft → testing → active ⇄ disabled
+    trigger:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "on"
+      for_s: 0                # 状态即触发（演练口径；生产场景按需加防抖）
+      retrigger_cooldown_s: 30
+    actions:
+      - { device: esp32s3-led-01, action: set_led,
+          params: { mode: blink, color: "#ff0000", period_ms: 500 } }
+    verify:                   # 闭环的「校验」步
+      resource: esp32s3-led-01/led_mode
+      op: "=="
+      value: blink
+      timeout_ms: 3000
+      on_fail: { notify: cloud, retry: 1 }
+
+  # 轻量自测规则（不依赖 ESP32 硬件，Mac/Pi 侧均可跑）：输出置 on 后自动回 off
+  - id: rule-selftest-01
+    name: 输出自复位（引擎自测用）
+    status: disabled          # 自测脚本临时置 active，平时禁用
+    trigger:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "on"
+      for_s: 0
+      retrigger_cooldown_s: 5
+    actions:
+      - { device: virtual-actuator-01, action: set_output, params: { state: "off" } }
+    verify:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "off"
+      timeout_ms: 2000
+      on_fail: { notify: cloud, retry: 1 }

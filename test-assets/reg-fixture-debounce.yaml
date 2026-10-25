@@ -1,0 +1,20 @@
+# 回归 T2-3：防抖语义——output=on 持续 for_s=2s 才触发；动作关输出自复位。
+# 与主规则（rule-20261024-01）同窗口并存，主规则会先红闪（rule_id 可区分，互不干扰）。
+rules:
+  - id: reg-debounce-01
+    name: 回归-T2-3 防抖（on 持续 2s → 关输出自复位）
+    status: active
+    trigger:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "on"
+      for_s: 2
+      retrigger_cooldown_s: 10
+    actions:
+      - { device: virtual-actuator-01, action: set_output, params: { state: "off" } }
+    verify:
+      resource: virtual-actuator-01/output
+      op: "=="
+      value: "off"
+      timeout_ms: 2000
+      on_fail: { notify: cloud, retry: 1 }
